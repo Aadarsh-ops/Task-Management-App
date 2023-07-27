@@ -1,0 +1,43 @@
+
+<nav class="top-nav">
+    <a class="brand-logo" routerLink="/">
+      <img src="assets/logo-positronx-white.svg" alt="positronX.io Logo">
+    </a>
+  </nav>
+  
+  <div class="sidebar">
+    <ul>
+      <li>
+        <a class="active">
+          <i class="fas fa-user"></i>User Profile
+        </a>
+      </li>
+      <li>
+        <a (click)="authService.SignOut()">
+          <i class="fas fa-sign-out-alt"></i>Log out
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+  <main>
+    <div class="inner-adjust">
+      <div class="pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">User Profile</h1>
+      </div>
+      <div *ngIf="authService.userData as user">
+        <div class="media">
+          <img class="avatar" src="{{(user.photoURL) ? user.photoURL : '/assets/dummy-user.png'}}"
+            alt="{{user.displayName}}">
+          <div class="media-body">
+            <h1>Hello: <strong>{{(user.displayName) ? user.displayName : 'User'}}</strong></h1>
+            <p>User ID: <strong>{{user.uid}}</strong></p>
+            <p>Email: <strong>{{user.email}}</strong></p>
+            <p>Email Verified: <strong>{{user.emailVerified}}</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  

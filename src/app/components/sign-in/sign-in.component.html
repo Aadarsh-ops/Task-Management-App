@@ -1,0 +1,26 @@
+
+
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <h2>Sign In</h2>
+  <mat-form-field>
+    <input matInput type="email" placeholder="Email" formControlName="email">
+    <mat-error *ngIf="loginForm.controls.email.invalid && loginForm.controls.email.touched">
+      Please enter a valid email.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="password" placeholder="Password" formControlName="password">
+    <mat-error *ngIf="loginForm.controls.password.invalid && loginForm.controls.password.touched">
+      Please enter a password.
+    </mat-error>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">Sign In</button>
+ <br>
+ <a mat-button (click)="forgotPassword()">Forgot Password?</a>
+
+ <div>Don't have an account?</div>
+ <a mat-button (click)="onSignUpClick()">Register User</a>
+ 
+</form>
