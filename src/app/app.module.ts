@@ -22,6 +22,9 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AddTaskComponent } from './components/add-task/add-task.component';
+import { EditTaskComponent } from './components/edit-task/edit-task.component';
+import { TaskListComponent } from './components/task-list/task-list.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     SignInComponent,
     SignUpComponent,
     ForgotPasswordComponent,
-    VerifyEmailComponent
+    VerifyEmailComponent,
+    AddTaskComponent,
+    EditTaskComponent,
+    TaskListComponent
   ],
   imports: [
     BrowserAnimationsModule,
