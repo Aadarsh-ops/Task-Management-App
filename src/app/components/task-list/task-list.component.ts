@@ -16,13 +16,12 @@ export class TaskListComponent {
   public displayedColumns = ['title', 'description', 'dueDate', 'status', 'actions'];
   taskStatuses = ['Completed', 'Pending'];
 
-
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-
   constructor(private taskService: TaskService) { }
+  @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit(): void {
     this.tasks$ = this.taskService.getTasks();
+
 
     this.tasks$.subscribe(tasks => {
       console.log(tasks);
@@ -30,36 +29,19 @@ export class TaskListComponent {
       this.dataSource.sort = this.sort;
     });
   }
-
-  // onDeleteTask(taskId: string): void {
-  //   console.log(taskId);
-  //   this.taskService.deleteTask(taskId)
-  //     .catch(error => console.error('Error deleting task:', error));
-  // }
-  onDeleteTask(taskId: string): void {
-    console.log(taskId);
-    from(this.taskService.deleteTask(taskId))
-      .toPromise()
-      .then(() => console.log('Task deleted successfully'))
-      .catch(error => console.error('Error deleting task:', error));
-  }
-  
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  applyFilterStatus(filterValue: string) {
-    if (filterValue === 'Completed' || filterValue === 'Pending') {
-      this.dataSource.filterPredicate = (data: Task, filter: string) => {
-        return data.completed.toString() === (filterValue === 'Completed').toString();
-      };
+  applyFilter(filterValue: any) {
+    if (filterValue === 'all') {
+      this.dataSource.filter = '';
     } else {
-      this.dataSource.filterPredicate = (data: Task, filter: string) => {
-        const dueDate = data.dueDate as any; // For handling either a Timestamp or Date
-        return dueDate.toDate().toLocaleDateString().indexOf(filterValue) !== -1;
-      };
+      this.dataSource.filter = filterValue ? 'true' : 'false';
     }
-    this.dataSource.filter = filterValue.toLowerCase();
   }
+
+
+  onDeleteTask(taskId: string): void {
+    console.log('fff',taskId);
+    this.taskService.deleteTask(taskId);
+  }
+
 }
 

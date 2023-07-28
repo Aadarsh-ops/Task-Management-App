@@ -11,7 +11,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class EditTaskComponent {
   taskForm: FormGroup;
-  isNewTask: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,7 +30,6 @@ export class EditTaskComponent {
     this.route.paramMap.subscribe((params) => {
       const taskId = params.get('id');
       if (taskId) {
-        this.isNewTask = false;
         this.taskService.getTask(taskId).subscribe((task) => {
           if (task) {
             this.taskForm.patchValue(task);
@@ -39,9 +37,7 @@ export class EditTaskComponent {
             // Handle task not found error
           }
         });
-      } else {
-        this.isNewTask = true;
-      }
+      } 
     });
   }
 
@@ -49,14 +45,14 @@ export class EditTaskComponent {
     if (this.taskForm.valid) {
       const taskData = this.taskForm.value;
       const taskId = this.route.snapshot.paramMap.get('id');
-      this.taskService
-        .updateTask(taskId, taskData)
-        .then(() => {
+      this.taskService.updateTask(taskId, taskData).subscribe(
+        () => {
           this.router.navigate(['/task-list']);
-        })
-        .catch((error) => {
-          // Handle error during task update
-        });
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
     }
   }
 

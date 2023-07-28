@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, from, map } from 'rxjs';
+import { Observable, catchError, from, map } from 'rxjs';
 import { Task } from './task';
 import {
   AngularFirestoreCollection,
@@ -37,32 +37,39 @@ export class TaskService {
     return this.tasksCollection.add(task);
   }
 
-  updateTask(taskId: string, updatedTask: Task): Promise<void> {
-    console.log(`Updating task with ID: ${taskId}`);
-    return this.tasksCollection.ref
-      .where('id', '==', taskId)
-      .get()
-      .then((querySnapshot) => {
-        if (!querySnapshot.empty) {
-          const documentRef = querySnapshot.docs[0].ref;
-          return documentRef
-            .update(updatedTask)
-            .then(() => {
+  updateTask(taskId: string, updatedTask: Task): Observable<void> {
+    return new Observable<void>((observer) => {
+      this.tasksCollection.ref
+        .where('id', '==', taskId)
+        .get()
+        .then(async (querySnapshot) => {
+          if (!querySnapshot.empty) {
+            const documentRef = querySnapshot.docs[0].ref;
+            try {
+              await documentRef.update(updatedTask);
               console.log(`Task with ID ${taskId} updated successfully.`);
-            })
-            .catch((error) => {
+              observer.next(); // Emit a value to the observer (success).
+              observer.complete(); // Complete the observable.
+            } catch (error) {
               console.error('Error updating task:', error);
-              throw error; 
-            });
-        } else {
-          console.log(`Task with ID ${taskId} not found.`);
-          return Promise.resolve(); 
-        }
+              observer.error(error); // Emit an error to the observer.
+            }
+          } else {
+            console.log(`Task with ID ${taskId} not found.`);
+            observer.complete(); // Complete the observable since there is no task to update.
+          }
+        })
+        .catch((error) => {
+          console.error('Error querying task:', error);
+          observer.error(error); // Emit an error to the observer.
+        });
+    }).pipe(
+      catchError((error) => {
+        // Handle errors that may occur in the observable chain (optional).
+        console.error('Error in updateTask observable:', error);
+        throw error; // Rethrow the error to propagate it to the subscriber (component).
       })
-      .catch((error) => {
-        console.error('Error querying task:', error);
-        throw error; 
-      });
+    );
   }
 
   async deleteTask(taskId: string): Promise<void> {
