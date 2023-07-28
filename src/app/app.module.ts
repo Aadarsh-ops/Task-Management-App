@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatSelectModule } from '@angular/material/select';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
@@ -25,6 +26,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AddTaskComponent } from './components/add-task/add-task.component';
 import { EditTaskComponent } from './components/edit-task/edit-task.component';
 import { TaskListComponent } from './components/task-list/task-list.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatTableModule } from '@angular/material/table'; 
+import { TimestampToDatePipe } from './shared/services/timestamp-to-date.pipe';
 
 @NgModule({
   declarations: [
@@ -36,7 +41,8 @@ import { TaskListComponent } from './components/task-list/task-list.component';
     VerifyEmailComponent,
     AddTaskComponent,
     EditTaskComponent,
-    TaskListComponent
+    TaskListComponent,
+   TimestampToDatePipe 
   ],
   imports: [
     BrowserAnimationsModule,
@@ -48,6 +54,10 @@ import { TaskListComponent } from './components/task-list/task-list.component';
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
+    MatTableModule,
     BrowserModule,
     AppRoutingModule,
     AngularFirestoreModule,
@@ -56,7 +66,6 @@ import { TaskListComponent } from './components/task-list/task-list.component';
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireDatabaseModule,
-
   ],
   providers: [],
   bootstrap: [AppComponent]

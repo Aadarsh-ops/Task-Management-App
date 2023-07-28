@@ -24,7 +24,7 @@ export class ForgotPasswordComponent {
   onSubmit() {
     if (this.forgotForm.valid) {
       const email = this.forgotForm.value.email;
-      this.authService.ForgotPassword(email);
+      this.authService.forgotPassword(email);
     }
   }
   onSignInClick(){

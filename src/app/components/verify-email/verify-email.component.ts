@@ -12,8 +12,8 @@ export class VerifyEmailComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  SendVerificationMail() {
-      this.authService.SendVerificationMail();
+  sendVerificationMail() {
+      this.authService.sendVerificationMail();
     }
   onSignInClick(){
     this.router.navigate(['sign-in']);

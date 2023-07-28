@@ -26,7 +26,7 @@ export class SignUpComponent  {
     if (this.signUpForm.valid) {
       const userEmail = this.signUpForm.value.email;
       const userPwd = this.signUpForm.value.password;
-      this.authService.SignUp(userEmail, userPwd);
+      this.authService.signUp(userEmail, userPwd);
     }
   }
 

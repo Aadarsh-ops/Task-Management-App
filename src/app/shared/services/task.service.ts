@@ -1,38 +1,85 @@
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, from, map } from 'rxjs';
 import { Task } from './task';
-import { AngularFirestoreCollection, AngularFirestore } from '@angular/fire/compat/firestore/'; 
-
-
+import {
+  AngularFirestoreCollection,
+  AngularFirestore,
+} from '@angular/fire/compat/firestore/';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TaskService {
-  private TasksCollection: AngularFirestoreCollection<Task>;
+  private tasksCollection: AngularFirestoreCollection<Task>;
 
   constructor(private afs: AngularFirestore) {
-    this.TasksCollection = this.afs.collection<Task>('task');
+    this.tasksCollection = this.afs.collection<Task>('task');
   }
 
   getTasks(): Observable<Task[]> {
-    return this.TasksCollection.valueChanges();
+    return this.tasksCollection.valueChanges();
   }
 
-  getTask(id: string): Observable<Task | null> {
-    return this.TasksCollection.doc<Task>(id).valueChanges().pipe(
-      map((task) => task || null) // Map undefined to null
+  getTask(taskId: string): Observable<Task | null> {
+    return from(this.tasksCollection.ref.where('id', '==', taskId).get()).pipe(
+      map((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const task = querySnapshot.docs[0].data() as Task;
+          return task;
+        } else {
+          return null;
+        }
+      })
     );
   }
+
   addTask(task: Task): Promise<any> {
-    return this.TasksCollection.add(task);
+    return this.tasksCollection.add(task);
   }
 
-  updateTask(id: string, task: Task): Promise<void> {
-    return this.TasksCollection.doc(id).update(task);
+  updateTask(taskId: string, updatedTask: Task): Promise<void> {
+    console.log(`Updating task with ID: ${taskId}`);
+    return this.tasksCollection.ref
+      .where('id', '==', taskId)
+      .get()
+      .then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const documentRef = querySnapshot.docs[0].ref;
+          return documentRef
+            .update(updatedTask)
+            .then(() => {
+              console.log(`Task with ID ${taskId} updated successfully.`);
+            })
+            .catch((error) => {
+              console.error('Error updating task:', error);
+              throw error; 
+            });
+        } else {
+          console.log(`Task with ID ${taskId} not found.`);
+          return Promise.resolve(); 
+        }
+      })
+      .catch((error) => {
+        console.error('Error querying task:', error);
+        throw error; 
+      });
   }
 
-  deleteTask(id: string): Promise<void> {
-    return this.TasksCollection.doc(id).delete();
+  async deleteTask(taskId: string): Promise<void> {
+    try {
+      const querySnapshot = await this.tasksCollection.ref
+        .where('id', '==', taskId)
+        .get();
+      if (!querySnapshot.empty) {
+        const documentRef = querySnapshot.docs[0].ref;
+        await documentRef.delete();
+        console.log(`Task with ID ${taskId} deleted successfully.`);
+      } else {
+        console.log(`Task with ID ${taskId} not found.`);
+      }
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      throw error;
+    }
   }
 }
