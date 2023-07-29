@@ -4,9 +4,15 @@
     padding: 20px;
   
     mat-card-header {
+      display: flex;
+      justify-content: space-between;
       background-color: #007bff;
       color: #fff;
       padding: 12px;
+      button {
+        min-width: 120px;
+        margin-left: 10px;
+      }
     }
   
     mat-card-content {
@@ -15,14 +21,17 @@
         justify-content: flex-end;
         margin-bottom: 20px;
   
-        button {
-          min-width: 120px;
-          margin-left: 10px;
-        }
+        
       }
-  
+      
       .table-container {
         overflow-x: auto;
+        .map-position{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          
+        }
       }
   
       table {
@@ -55,4 +64,5 @@
       }
     }
   }
+
   

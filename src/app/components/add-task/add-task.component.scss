@@ -1,5 +1,5 @@
 .task-card {
-    width: 400px;
+    width: 600px;
     margin: 20px auto;
     padding: 20px;
   
@@ -8,11 +8,17 @@
       color: #fff; 
       padding: 12px;
     }
-  
+    .form-group{
+      display: flex;
+      flex-direction: table-column-group;
+    }
     mat-card-content {
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex-direction: row;
+      google-map{
+        height:"240px";
+        width:"250px"
+      }
     }
   
     form {

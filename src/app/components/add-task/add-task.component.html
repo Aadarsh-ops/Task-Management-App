@@ -9,12 +9,14 @@
           <mat-label>Title</mat-label>
           <input matInput placeholder="Enter the task title" formControlName="title" required>
           <mat-error *ngIf="taskForm.get('title').hasError('required')">Title is required</mat-error>
+          <mat-error *ngIf="taskForm.get('title').hasError('minlength')">Title must be at least 5 characters long</mat-error>
         </mat-form-field>
-  
+        
         <mat-form-field appearance="fill">
           <mat-label>Description</mat-label>
           <textarea matInput placeholder="Enter the task description" formControlName="description" required></textarea>
           <mat-error *ngIf="taskForm.get('description').hasError('required')">Description is required</mat-error>
+          <mat-error *ngIf="taskForm.get('description').hasError('maxlength')">Description must be at most 100 characters long</mat-error>
         </mat-form-field>
   
         <mat-form-field appearance="fill">
@@ -28,8 +30,9 @@
         <div class="button-group">
           <button mat-raised-button color="primary" type="submit" [disabled]="taskForm.invalid">Create Task</button>
           <button mat-raised-button color="warn" type="button" (click)="resetForm()">Reset Form</button>
-        </div>
+        </div> 
       </form>
+      <app-map (markerPositionChange)="handleMarkerPositionChange($event)"></app-map>
     </mat-card-content>
   </mat-card>
   

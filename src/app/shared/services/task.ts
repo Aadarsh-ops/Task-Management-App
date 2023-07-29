@@ -6,5 +6,6 @@ export interface Task {
     dueDate: firebase.firestore.Timestamp | Date; 
     completed: boolean;
     status?: string;
+    markerPosition?: google.maps.LatLngLiteral;
   }
   

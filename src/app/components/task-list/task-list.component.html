@@ -1,63 +1,105 @@
 <!-- task-dashboard.component.html -->
 <mat-card class="task-card">
-    <mat-card-header>
-      <mat-card-title>Task Dashboard</mat-card-title>
-    </mat-card-header>
+  <mat-card-header>
+    <mat-card-title>Task Dashboard</mat-card-title>
+    <mat-form-field appearance="fill">
+      <mat-label>Filter Status</mat-label>
+      <mat-select (selectionChange)="applyFilter($event.value)">
+        <mat-option [value]="'all'">All</mat-option>
+        <mat-option [value]="true">Completed</mat-option>
+        <mat-option [value]="false">Pending</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="button-group">
+      <button mat-raised-button color="primary" routerLink="/add-task">
+        Add Task
+      </button>
+    </div>
+  </mat-card-header>
+  <br />
+  <mat-card-content>
+   
+    <div class="table-container">
+      
+      <div class="map-position">
+        <span class="title">Task Locations Mapped: Track Progress</span>
+        <app-map-marker
+          [parentMarkerPosition]="parentMarkerPosition"
+        ></app-map-marker>
+      </div>
     <br>
-    <mat-card-content>
-      <div class="button-group">
-        <button mat-raised-button color="primary" routerLink="/add-task">Add Task</button>
-      </div>
-  
-      <div class="table-container">
-        <mat-form-field appearance="fill">
-          <mat-label>Filter Status</mat-label>
-          <mat-select (selectionChange)="applyFilter($event.value)">
-            <mat-option [value]="'all'">All</mat-option>
-            <mat-option [value]="true">Completed</mat-option>
-            <mat-option [value]="false">Pending</mat-option>
-          </mat-select>
-        </mat-form-field>
-  
-        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-          <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header="title">Title</th>
-            <td mat-cell *matCellDef="let task">{{ task.title }}</td>
-          </ng-container>
-  
-          <ng-container matColumnDef="description">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
-            <td mat-cell *matCellDef="let task">{{ task.description }}</td>
-          </ng-container>
-  
-          <ng-container matColumnDef="dueDate">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header="dueDate">Due Date</th>
-            <td mat-cell *matCellDef="let task">{{ task.dueDate | timestampToDate | date }}</td>
-          </ng-container>
-  
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Status</th>
-            <td mat-cell *matCellDef="let task">
-              {{ task.completed ? 'Completed' : 'Pending' }}
-            </td>
-          </ng-container>
-  
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let task">
-              <button mat-icon-button color="primary" [routerLink]="['/edit-task', task.id]">
-                <mat-icon>edit</mat-icon>
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        matSort
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="title">
+            Title
+          </th>
+          <td mat-cell *matCellDef="let task">{{ task.title }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+          <td mat-cell *matCellDef="let task">
+            <div *ngIf="task.description.split(' ').length > 15">
+              {{ task.description | truncate: 15 }}
+              <button mat-icon-button (click)="showDescriptionDialog(task.description)">
+                <mat-icon>info</mat-icon>
               </button>
-              <button mat-icon-button color="warn" (click)="onDeleteTask(task.id)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
-  
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-      </div>
-    </mat-card-content>
-  </mat-card>
-  
+            </div>
+            <div *ngIf="task.description.split(' ').length <= 15">
+              {{ task.description }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dueDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="dueDate">
+            Due Date
+          </th>
+          <td mat-cell *matCellDef="let task">
+            {{ task.dueDate | timestampToDate | date }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let task">
+            {{ task.completed ? "Completed" : "Pending" }}
+          
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let task">
+      
+            <button mat-icon-button (click)="showMarkerPosition(task)" (click)="handleMarkerPositionChange(task)">
+              <mat-icon> add_location</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="primary"
+              [routerLink]="['/edit-task', task.id]"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="onDeleteTask(task.id)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>

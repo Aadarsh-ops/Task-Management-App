@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { User } from './user';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class AuthService {
     public afs: AngularFirestore, 
     public afAuth: AngularFireAuth, 
     public router: Router,
-    public ngZone: NgZone 
+    public ngZone: NgZone,
+    private snackBar: MatSnackBar
   ) {
 
     this.afAuth.authState.subscribe((user) => {
@@ -28,6 +30,13 @@ export class AuthService {
     });
   }
 
+  showErrorSnackbar(error: any) {
+    this.snackBar.open(error, 'Close', {
+      duration: 5000,
+      panelClass: ['error-snackbar'],
+    });
+  }
+
   signIn(email: string, password: string) {
     return this.afAuth
       .signInWithEmailAndPassword(email, password)
@@ -35,12 +44,12 @@ export class AuthService {
         this.setUserData(result.user);
         this.afAuth.authState.subscribe((user) => {
           if (user) {
-            this.router.navigate(['dashboard']);
+            this.router.navigate(['task-list']);
           }
         });
       })
       .catch((error) => {
-        window.alert(error.message);
+        this.showErrorSnackbar(error);
       });
   }
 
@@ -48,12 +57,11 @@ export class AuthService {
     return this.afAuth
       .createUserWithEmailAndPassword(email, password)
       .then((result) => {
-       
         this.sendVerificationMail();
         this.setUserData(result.user);
       })
       .catch((error) => {
-        window.alert(error.message);
+        this.showErrorSnackbar(error);
       });
   }
 
@@ -69,10 +77,10 @@ export class AuthService {
     return this.afAuth
       .sendPasswordResetEmail(passwordResetEmail)
       .then(() => {
-        window.alert('Password reset email sent, check your inbox.');
+        this.showErrorSnackbar('Password reset email sent, check your inbox.')
       })
       .catch((error) => {
-        window.alert(error);
+        this.showErrorSnackbar(error);
       });
   }
 

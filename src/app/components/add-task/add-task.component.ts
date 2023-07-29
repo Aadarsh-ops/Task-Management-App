@@ -4,26 +4,47 @@ import { TaskService } from 'src/app/shared/services/task.service';
 import { Task } from 'src/app/shared/services/task';
 import { v4 as uuidv4 } from 'uuid';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-add-task',
   templateUrl: './add-task.component.html',
-  styleUrls: ['./add-task.component.scss']
+  styleUrls: ['./add-task.component.scss'],
 })
 export class AddTaskComponent {
   taskForm: FormGroup;
+  parentMarkerPosition: google.maps.LatLngLiteral | null = null;
 
-  constructor(private formBuilder: FormBuilder,private taskService: TaskService,private router: Router,) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private taskService: TaskService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit() {
     this.initTaskForm();
   }
 
+  handleMarkerPositionChange(newPosition: google.maps.LatLngLiteral | null) {
+    this.parentMarkerPosition = newPosition;
+    this.taskForm.patchValue({ markerPosition: newPosition });
+  }
+
   private initTaskForm() {
     this.taskForm = this.formBuilder.group({
-      title: ['', [Validators.required]],
-      description: ['', [Validators.required]],
-      dueDate: [null, [Validators.required]]
+      title: ['', [Validators.required, Validators.minLength(5)]], 
+      description: ['', [Validators.required, Validators.maxLength(100)]],
+      dueDate: [null, [Validators.required]],
+      markerPosition: [''],
+    });
+  }
+  createTaskForm() {
+    this.taskForm = this.formBuilder.group({
+      title: ['', [Validators.required, Validators.minLength(5)]], // Minimum 5 characters for the title
+      description: ['', [Validators.required, Validators.minLength(30)]], // Minimum 30 characters for the description
+      dueDate: ['', Validators.required],
+      makerPosition: [null, Validators.required], // Required markerPosition value
     });
   }
 
@@ -32,13 +53,17 @@ export class AddTaskComponent {
       const newTask: Task = {
         id: uuidv4(),
         ...this.taskForm.value,
-        completed: false // New tasks are not completed by default
+        completed: false, 
       };
-      this.taskService.addTask(newTask)
-      .then(()=> this.router.navigate(['/task-list']))
-      .catch((error) => {
-        console.error('Error adding product:', error);
-      });
+      this.taskService
+        .addTask(newTask)
+        .then(() => this.router.navigate(['/task-list']))
+        .catch((error) => {
+          this.snackBar.open(error, 'Close', {
+            duration: 5000,
+            panelClass: ['error-snackbar'],
+          });
+        });
     }
   }
 

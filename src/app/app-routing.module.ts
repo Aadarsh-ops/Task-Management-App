@@ -9,17 +9,20 @@ import { AuthGuard } from './shared/guard/auth.guard';
 import { AddTaskComponent } from './components/add-task/add-task.component';
 import { EditTaskComponent } from './components/edit-task/edit-task.component';
 import { TaskListComponent } from './components/task-list/task-list.component';
+import { MapComponent } from './components/map/map.component';
+import { MapMarkerComponent } from './components/map-maker/map-maker.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
   { path: 'sign-in', component: SignInComponent },
   { path: 'register-user', component: SignUpComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'task-list', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'verify-email-address', component: VerifyEmailComponent },
-  { path: 'task-list', component: TaskListComponent },
   { path: 'edit-task/:id', component: EditTaskComponent },
   { path: 'add-task', component: AddTaskComponent },
+  { path: 'map', component: MapComponent },
+  { path: 'map-maker', component: MapMarkerComponent },
 ];
 
 @NgModule({

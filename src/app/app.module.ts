@@ -28,8 +28,16 @@ import { EditTaskComponent } from './components/edit-task/edit-task.component';
 import { TaskListComponent } from './components/task-list/task-list.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatTableModule } from '@angular/material/table'; 
+import { MatTableModule } from '@angular/material/table';
 import { TimestampToDatePipe } from './shared/services/timestamp-to-date.pipe';
+import { MapComponent } from './components/map/map.component';
+import { GoogleMapsModule } from '@angular/google-maps';
+import { MapMarkerComponent } from './components/map-maker/map-maker.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { TaskDescriptionDialogComponent } from './components/task-description-dialog/task-description-dialog';
+import { TruncatePipe } from './shared/services/truncate.pipe';
+
 
 @NgModule({
   declarations: [
@@ -42,7 +50,11 @@ import { TimestampToDatePipe } from './shared/services/timestamp-to-date.pipe';
     AddTaskComponent,
     EditTaskComponent,
     TaskListComponent,
-   TimestampToDatePipe 
+    TimestampToDatePipe,
+    MapComponent,
+    MapMarkerComponent,
+    TaskDescriptionDialogComponent,
+    TruncatePipe
   ],
   imports: [
     BrowserAnimationsModule,
@@ -66,8 +78,10 @@ import { TimestampToDatePipe } from './shared/services/timestamp-to-date.pipe';
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireDatabaseModule,
+    GoogleMapsModule,
+    MatSnackBarModule,
+    MatDialogModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

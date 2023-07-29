@@ -5,6 +5,7 @@ import {
   AngularFirestoreCollection,
   AngularFirestore,
 } from '@angular/fire/compat/firestore/';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ import {
 export class TaskService {
   private tasksCollection: AngularFirestoreCollection<Task>;
 
-  constructor(private afs: AngularFirestore) {
+  constructor(private afs: AngularFirestore, private snackBar: MatSnackBar) {
     this.tasksCollection = this.afs.collection<Task>('task');
   }
 
@@ -33,6 +34,13 @@ export class TaskService {
     );
   }
 
+  showErrorSnackbar(error: any) {
+    this.snackBar.open(error, 'Close', {
+      duration: 5000,
+      panelClass: ['error-snackbar'],
+    });
+  }
+
   addTask(task: Task): Promise<any> {
     return this.tasksCollection.add(task);
   }
@@ -47,27 +55,21 @@ export class TaskService {
             const documentRef = querySnapshot.docs[0].ref;
             try {
               await documentRef.update(updatedTask);
-              console.log(`Task with ID ${taskId} updated successfully.`);
-              observer.next(); // Emit a value to the observer (success).
-              observer.complete(); // Complete the observable.
+              observer.next();
+              observer.complete();
             } catch (error) {
-              console.error('Error updating task:', error);
-              observer.error(error); // Emit an error to the observer.
+              observer.error(this.showErrorSnackbar(error));
             }
           } else {
-            console.log(`Task with ID ${taskId} not found.`);
-            observer.complete(); // Complete the observable since there is no task to update.
+            observer.complete();
           }
         })
         .catch((error) => {
-          console.error('Error querying task:', error);
-          observer.error(error); // Emit an error to the observer.
+          observer.error(this.showErrorSnackbar(error));
         });
     }).pipe(
       catchError((error) => {
-        // Handle errors that may occur in the observable chain (optional).
-        console.error('Error in updateTask observable:', error);
-        throw error; // Rethrow the error to propagate it to the subscriber (component).
+        throw error;
       })
     );
   }
@@ -80,12 +82,8 @@ export class TaskService {
       if (!querySnapshot.empty) {
         const documentRef = querySnapshot.docs[0].ref;
         await documentRef.delete();
-        console.log(`Task with ID ${taskId} deleted successfully.`);
-      } else {
-        console.log(`Task with ID ${taskId} not found.`);
       }
     } catch (error) {
-      console.error('Error deleting task:', error);
       throw error;
     }
   }

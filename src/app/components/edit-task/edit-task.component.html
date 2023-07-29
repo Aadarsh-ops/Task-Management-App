@@ -16,6 +16,9 @@
         <mat-error *ngIf="taskForm.get('title').hasError('required')"
           >Title is required</mat-error
         >
+        <mat-error *ngIf="taskForm.get('title').hasError('minlength')"
+          >Title must be at least 5 characters long</mat-error
+        >
       </mat-form-field>
 
       <mat-form-field appearance="fill">
@@ -28,6 +31,9 @@
         ></textarea>
         <mat-error *ngIf="taskForm.get('description').hasError('required')"
           >Description is required</mat-error
+        >
+        <mat-error *ngIf="taskForm.get('description').hasError('maxlength')"
+          >Description must be at most 100 characters long</mat-error
         >
       </mat-form-field>
 
@@ -45,13 +51,11 @@
         <mat-error *ngIf="taskForm.get('dueDate').hasError('required')"
           >Due Date is required</mat-error
         >
+
+        <span *ngIf="formattedDueDate" class="formatted-due-date">
+          Formatted Due Date: {{ formattedDueDate }}
+        </span>
       </mat-form-field>
-      <div *ngIf="taskForm.get('dueDate').value">
-        <p>
-          Formatted Due Date:
-          {{ taskForm.get("dueDate").value | timestampToDate | date }}
-        </p>
-      </div>
       <mat-form-field appearance="fill">
         <mat-label>Task Status</mat-label>
         <mat-select formControlName="completed">
@@ -79,5 +83,9 @@
         </button>
       </div>
     </form>
+    <app-map
+      [parentMarkerPosition]="parentMarkerPosition"
+      (markerPositionChange)="handleMarkerPositionChange($event)"
+    ></app-map>
   </mat-card-content>
 </mat-card>
