@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Observable, from } from 'rxjs';
 import { TaskService } from 'src/app/shared/services/task.service';
-import { Task } from 'src/app/shared/services/task';
+import { Task } from 'src/app/shared/Interface/task';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';

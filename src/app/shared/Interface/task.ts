@@ -7,5 +7,6 @@ export interface Task {
     completed: boolean;
     status?: string;
     markerPosition?: google.maps.LatLngLiteral;
+    userId?: String;
   }
   

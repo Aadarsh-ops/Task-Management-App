@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { TaskService } from 'src/app/shared/services/task.service';
-import { Task } from 'src/app/shared/services/task';
+import { Task } from 'src/app/shared/Interface/task';
 import { v4 as uuidv4 } from 'uuid';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';

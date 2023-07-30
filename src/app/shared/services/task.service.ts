@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, catchError, from, map } from 'rxjs';
-import { Task } from './task';
+import { Task } from '../Interface/task';
 import {
   AngularFirestoreCollection,
   AngularFirestore,
@@ -17,8 +17,23 @@ export class TaskService {
     this.tasksCollection = this.afs.collection<Task>('task');
   }
 
+  private getUserIdFromLocalStorage(): string | null {
+    const user = JSON.parse(localStorage.getItem('user')!);
+    return user.uid;
+  }
+
   getTasks(): Observable<Task[]> {
-    return this.tasksCollection.valueChanges();
+    const userId = this.getUserIdFromLocalStorage();
+    if (userId) {
+      return this.afs
+        .collection<Task>('task', (ref) => ref.where('userId', '==', userId))
+        .valueChanges();
+    } else {
+      return new Observable<Task[]>((observer) => {
+        observer.next([]);
+        observer.complete();
+      });
+    }
   }
 
   getTask(taskId: string): Observable<Task | null> {
@@ -36,13 +51,21 @@ export class TaskService {
 
   showErrorSnackbar(error: any) {
     this.snackBar.open(error, 'Close', {
-      duration: 5000,
+      duration: 3000,
       panelClass: ['error-snackbar'],
     });
   }
 
   addTask(task: Task): Promise<any> {
-    return this.tasksCollection.add(task);
+    const userId = this.getUserIdFromLocalStorage();
+    if (userId) {
+      task.userId = userId;
+      return this.tasksCollection.add(task);
+    } else {
+      return Promise.reject(
+        this.showErrorSnackbar('User is not authenticated')
+      );
+    }
   }
 
   updateTask(taskId: string, updatedTask: Task): Observable<void> {

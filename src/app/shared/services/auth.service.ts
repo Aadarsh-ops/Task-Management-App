@@ -1,23 +1,25 @@
 import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
+import {
+  AngularFirestore,
+  AngularFirestoreDocument,
+} from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { User } from './user';
+import { User } from '../Interface/user';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  userData: any; 
+  userData: any;
   constructor(
-    public afs: AngularFirestore, 
-    public afAuth: AngularFireAuth, 
+    public afs: AngularFirestore,
+    public afAuth: AngularFireAuth,
     public router: Router,
     public ngZone: NgZone,
     private snackBar: MatSnackBar
   ) {
-
     this.afAuth.authState.subscribe((user) => {
       if (user) {
         this.userData = user;
@@ -77,7 +79,7 @@ export class AuthService {
     return this.afAuth
       .sendPasswordResetEmail(passwordResetEmail)
       .then(() => {
-        this.showErrorSnackbar('Password reset email sent, check your inbox.')
+        this.showErrorSnackbar('Password reset email sent, check your inbox.');
       })
       .catch((error) => {
         this.showErrorSnackbar(error);
@@ -88,7 +90,7 @@ export class AuthService {
     const user = JSON.parse(localStorage.getItem('user')!);
     return user !== null && user.emailVerified !== false ? true : false;
   }
-  
+
   setUserData(user: any) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
       `users/${user.uid}`

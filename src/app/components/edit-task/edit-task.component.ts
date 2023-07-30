@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from 'src/app/shared/services/task.service';
-import { Task } from 'src/app/shared/services/task';
+import { Task } from 'src/app/shared/Interface/task';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CustomDateFormatPipe } from 'src/app/shared/services/coustom-date-dormat-pipe';
 import { MatSnackBar } from '@angular/material/snack-bar';
