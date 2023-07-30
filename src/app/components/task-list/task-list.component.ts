@@ -75,13 +75,6 @@ export class TaskListComponent {
     }
   }
 
-  showDescriptionDialog(description: string): void {
-    this.dialog.open(TaskDescriptionDialogComponent, {
-      data: description,
-      width: '400px', 
-    });
-  }
-
   onDeleteTask(taskId: string): void {
     this.taskService.deleteTask(taskId).subscribe(
       () => {
