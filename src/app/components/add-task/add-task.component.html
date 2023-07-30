@@ -32,8 +32,13 @@
           <button mat-raised-button color="primary" type="submit" [disabled]="taskForm.invalid">Create Task</button>
           <button mat-raised-button color="warn" type="button" (click)="resetForm()">Reset Form</button>
         </div> 
+        
       </form>
+      <div class="map-group">
+        <h4>mark your task location
+        </h4>
       <app-map (markerPositionChange)="handleMarkerPositionChange($event)"></app-map>
+      </div>
     </mat-card-content>
   </mat-card>
   

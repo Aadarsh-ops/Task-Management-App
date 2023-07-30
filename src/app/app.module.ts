@@ -37,6 +37,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TruncatePipe } from './shared/services/truncate.pipe';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 
 @NgModule({
@@ -80,7 +81,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
     GoogleMapsModule,
     MatSnackBarModule,
     MatDialogModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatSlideToggleModule
   ],
   bootstrap: [AppComponent],
 })

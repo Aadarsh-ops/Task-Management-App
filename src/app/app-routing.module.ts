@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
   { path: 'sign-in', component: SignInComponent },
   { path: 'register-user', component: SignUpComponent },
-  { path: 'task-list', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'task-list', component: TaskListComponent, canActivate: [AuthGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'verify-email-address', component: VerifyEmailComponent },
   { path: 'edit-task/:id', component: EditTaskComponent },

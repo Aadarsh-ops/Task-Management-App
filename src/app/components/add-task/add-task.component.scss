@@ -44,6 +44,7 @@
         display: flex;
         justify-content: space-between;
         margin-top: 20px;
+        padding-top: 10px;
   
         button {
           min-width: 120px;
@@ -61,6 +62,12 @@
         &:disabled {
           opacity: 0.7;
         }
+      }
+    }
+    .map-group{
+      text-align: center;
+      h4{
+        color:red;
       }
     }
   }

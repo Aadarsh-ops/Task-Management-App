@@ -12,7 +12,6 @@
     mat-card-content {
       display: flex;
       flex-direction: row;
-      align-items: center;
     }
   
     form {
@@ -56,6 +55,9 @@
           opacity: 0.7;
         }
       }
+    }
+    .map-group{
+      text-align: center;
     }
   }
   
