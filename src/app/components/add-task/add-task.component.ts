@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { TaskService } from 'src/app/shared/services/task.service';
 import { Task } from 'src/app/shared/services/task';
 import { v4 as uuidv4 } from 'uuid';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DateFilterFn } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-add-task',
@@ -14,6 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class AddTaskComponent {
   taskForm: FormGroup;
   parentMarkerPosition: google.maps.LatLngLiteral | null = null;
+  minDate: Date = new Date();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -21,10 +23,13 @@ export class AddTaskComponent {
     private router: Router,
     private snackBar: MatSnackBar
   ) {}
+  
 
+  
   ngOnInit() {
     this.initTaskForm();
   }
+  
 
   handleMarkerPositionChange(newPosition: google.maps.LatLngLiteral | null) {
     this.parentMarkerPosition = newPosition;
@@ -33,20 +38,14 @@ export class AddTaskComponent {
 
   private initTaskForm() {
     this.taskForm = this.formBuilder.group({
-      title: ['', [Validators.required, Validators.minLength(5)]], 
+      title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(20)]],
       description: ['', [Validators.required, Validators.maxLength(100)]],
-      dueDate: [null, [Validators.required]],
+      dueDate: [null, [Validators.required,]],
       markerPosition: [''],
     });
   }
-  createTaskForm() {
-    this.taskForm = this.formBuilder.group({
-      title: ['', [Validators.required, Validators.minLength(5)]], // Minimum 5 characters for the title
-      description: ['', [Validators.required, Validators.minLength(30)]], // Minimum 30 characters for the description
-      dueDate: ['', Validators.required],
-      makerPosition: [null, Validators.required], // Required markerPosition value
-    });
-  }
+
+
 
   onSubmit() {
     if (this.taskForm.valid) {
