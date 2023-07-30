@@ -35,8 +35,8 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { MapMarkerComponent } from './components/map-maker/map-maker.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
-import { TaskDescriptionDialogComponent } from './components/task-description-dialog/task-description-dialog';
 import { TruncatePipe } from './shared/services/truncate.pipe';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 
 @NgModule({
@@ -53,7 +53,6 @@ import { TruncatePipe } from './shared/services/truncate.pipe';
     TimestampToDatePipe,
     MapComponent,
     MapMarkerComponent,
-    TaskDescriptionDialogComponent,
     TruncatePipe
   ],
   imports: [
@@ -81,6 +80,7 @@ import { TruncatePipe } from './shared/services/truncate.pipe';
     GoogleMapsModule,
     MatSnackBarModule,
     MatDialogModule,
+    MatToolbarModule
   ],
   bootstrap: [AppComponent],
 })

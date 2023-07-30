@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, catchError, from, map } from 'rxjs';
+import { Observable, catchError, from, map, switchMap, throwError } from 'rxjs';
 import { Task } from '../Interface/task';
 import {
   AngularFirestoreCollection,
@@ -56,58 +56,61 @@ export class TaskService {
     });
   }
 
-  addTask(task: Task): Promise<any> {
-    const userId = this.getUserIdFromLocalStorage();
-    if (userId) {
-      task.userId = userId;
-      return this.tasksCollection.add(task);
-    } else {
-      return Promise.reject(
-        this.showErrorSnackbar('User is not authenticated')
-      );
-    }
+  addTask(task: Task): Observable<any> {
+    return new Observable((observer) => {
+      const userId = this.getUserIdFromLocalStorage();
+      if (userId) {
+        task.userId = userId;
+        this.tasksCollection
+          .add(task)
+          .then((result) => {
+            observer.next(result);
+            observer.complete();
+          })
+          .catch((error) => {
+            observer.error(error);
+          });
+      } else {
+        observer.error(new Error('User is not authenticated'));
+      }
+    });
   }
 
   updateTask(taskId: string, updatedTask: Task): Observable<void> {
-    return new Observable<void>((observer) => {
-      this.tasksCollection.ref
-        .where('id', '==', taskId)
-        .get()
-        .then(async (querySnapshot) => {
-          if (!querySnapshot.empty) {
-            const documentRef = querySnapshot.docs[0].ref;
-            try {
-              await documentRef.update(updatedTask);
-              observer.next();
-              observer.complete();
-            } catch (error) {
-              observer.error(this.showErrorSnackbar(error));
-            }
-          } else {
-            observer.complete();
-          }
-        })
-        .catch((error) => {
-          observer.error(this.showErrorSnackbar(error));
-        });
-    }).pipe(
+    const userId = this.getUserIdFromLocalStorage();
+    updatedTask.userId = userId;
+    return from(this.tasksCollection.ref.where('id', '==', taskId).get()).pipe(
+      switchMap((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const documentRef = querySnapshot.docs[0].ref;
+          return from(documentRef.update(updatedTask));
+        } else {
+          return new Observable<void>((observer) => {
+            observer.error(new Error('Task not found'));
+          });
+        }
+      }),
       catchError((error) => {
+        this.showErrorSnackbar(error);
         throw error;
       })
     );
   }
 
-  async deleteTask(taskId: string): Promise<void> {
-    try {
-      const querySnapshot = await this.tasksCollection.ref
-        .where('id', '==', taskId)
-        .get();
-      if (!querySnapshot.empty) {
-        const documentRef = querySnapshot.docs[0].ref;
-        await documentRef.delete();
-      }
-    } catch (error) {
-      throw error;
-    }
+  deleteTask(taskId: string): Observable<void> {
+    return from(this.tasksCollection.ref.where('id', '==', taskId).get()).pipe(
+      switchMap((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const documentRef = querySnapshot.docs[0].ref;
+          return from(documentRef.delete());
+        } else {
+          return throwError(() => new Error('Task not found'));
+        }
+      }),
+      catchError((error) => {
+        this.showErrorSnackbar(error);
+        return throwError(() => error);
+      })
+    );
   }
 }

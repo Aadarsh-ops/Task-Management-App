@@ -7,7 +7,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { TaskDescriptionDialogComponent } from '../task-description-dialog/task-description-dialog';
 import { TruncatePipe } from 'src/app/shared/services/truncate.pipe';
 
 @Component({
@@ -18,7 +17,7 @@ import { TruncatePipe } from 'src/app/shared/services/truncate.pipe';
 })
 export class TaskListComponent {
   tasks$: Observable<Task[]>;
-  public dataSource: MatTableDataSource<Task>;
+  public dataSource: MatTableDataSource<Task> = new MatTableDataSource<Task>();
   public parentMarkerPosition: google.maps.LatLngLiteral[] | null = [];
   public displayedColumns = [
     'title',
@@ -46,7 +45,7 @@ export class TaskListComponent {
         }
       });
 
-      this.dataSource = new MatTableDataSource(tasks);
+      this.dataSource.data = tasks; 
       this.dataSource.sort = this.sort;
     });
   }
@@ -62,6 +61,7 @@ export class TaskListComponent {
     this.parentMarkerPosition = [task.markerPosition];
   }
   showMarkerPosition(task: Task): void {
+  
     if (
       task.markerPosition &&
       task.markerPosition.lat != null &&
@@ -78,15 +78,24 @@ export class TaskListComponent {
   showDescriptionDialog(description: string): void {
     this.dialog.open(TaskDescriptionDialogComponent, {
       data: description,
-      width: '400px', // Customize the dialog width if needed
+      width: '400px', 
     });
   }
 
   onDeleteTask(taskId: string): void {
-    this.taskService.deleteTask(taskId);
-    this.snackBar.open('Task deleted succesfully', 'Close', {
-      duration: 5000,
-      panelClass: ['error-snackbar'],
-    });
+    this.taskService.deleteTask(taskId).subscribe(
+      () => {
+        this.snackBar.open('Task deleted successfully', 'Close', {
+          duration: 5000,
+          panelClass: ['error-snackbar'],
+        });
+      },
+      (error) => {
+        this.snackBar.open(error.message, 'Close', {
+          duration: 5000,
+          panelClass: ['error-snackbar'],
+        });
+      }
+    );
   }
 }

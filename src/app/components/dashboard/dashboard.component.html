@@ -1,15 +1,11 @@
 <div class="dashboard-container">
- 
-  <header class="header-bar">
-    <div class="header-content">
-      <h1 class="app-title">Task Management App</h1>
-      
-      <button class="logout-button" (click)="authService.signOut()">Logout</button>
-    </div>
-  </header>
-
-
-  <main class="main-content">
-    <app-task-list></app-task-list>
-  </main>
+<div class="header">
+  <h1>Task Management App</h1>
+  <button class="logout-button" (click)="authService.signOut()">Logout</button>
 </div>
+
+<div class="content">
+  <app-task-list></app-task-list>
+</div>
+</div>
+

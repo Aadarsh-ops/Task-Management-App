@@ -72,11 +72,21 @@ export class EditTaskComponent {
   onSubmit(): void {
     if (this.taskForm.valid) {
       const taskData = this.taskForm.value;
+      console.log(taskData);
       const taskId = this.route.snapshot.paramMap.get('id');
-      this.taskService.updateTask(taskId, taskData)
-      this.router.navigate(['/task-list']);
+      this.taskService.updateTask(taskId, taskData).subscribe(
+        () => {
+          this.router.navigate(['/task-list']);
+        },
+        (error) => {
+          this.snackBar.open(error, 'Close', {
+            duration: 5000,
+            panelClass: ['error-snackbar'],
+          });
+        }
+      );
+    }
   }
-}
   
 
   cancelEdit(): void {

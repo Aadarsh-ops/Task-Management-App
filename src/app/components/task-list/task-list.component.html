@@ -49,12 +49,6 @@
             <td mat-cell *matCellDef="let task">
               <div *ngIf="task.description.split(' ').length > 15">
                 {{ task.description | truncate : 15 }}
-                <button
-                  mat-icon-button
-                  (click)="showDescriptionDialog(task.description)"
-                >
-                  <mat-icon>info</mat-icon>
-                </button>
               </div>
               <div *ngIf="task.description.split(' ').length <= 15">
                 {{ task.description }}

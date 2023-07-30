@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  AbstractControl,
+} from '@angular/forms';
 import { TaskService } from 'src/app/shared/services/task.service';
 import { Task } from 'src/app/shared/Interface/task';
 import { v4 as uuidv4 } from 'uuid';
@@ -23,13 +28,10 @@ export class AddTaskComponent {
     private router: Router,
     private snackBar: MatSnackBar
   ) {}
-  
 
-  
   ngOnInit() {
     this.initTaskForm();
   }
-  
 
   handleMarkerPositionChange(newPosition: google.maps.LatLngLiteral | null) {
     this.parentMarkerPosition = newPosition;
@@ -38,31 +40,39 @@ export class AddTaskComponent {
 
   private initTaskForm() {
     this.taskForm = this.formBuilder.group({
-      title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(20)]],
+      title: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(20),
+        ],
+      ],
       description: ['', [Validators.required, Validators.maxLength(100)]],
-      dueDate: [null, [Validators.required,]],
+      dueDate: [null, [Validators.required]],
       markerPosition: [''],
     });
   }
-
-
 
   onSubmit() {
     if (this.taskForm.valid) {
       const newTask: Task = {
         id: uuidv4(),
         ...this.taskForm.value,
-        completed: false, 
+        completed: false,
       };
-      this.taskService
-        .addTask(newTask)
-        .then(() => this.router.navigate(['/task-list']))
-        .catch((error) => {
-          this.snackBar.open(error, 'Close', {
+      this.taskService.addTask(newTask);
+      this.taskService.addTask(newTask).subscribe(
+        () => {
+          this.router.navigate(['/task-list']);
+        },
+        (error) => {
+          this.snackBar.open(error.message, 'Close', {
             duration: 5000,
             panelClass: ['error-snackbar'],
           });
-        });
+        }
+      );
     }
   }
 
